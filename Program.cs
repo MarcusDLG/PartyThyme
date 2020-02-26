@@ -35,7 +35,7 @@ namespace PartyThyme
             var displayAll = db.Plants.OrderBy(plant => plant.LocatedPlanted);
             foreach (var plant in displayAll)
             {
-              Console.WriteLine($"{plant.Species} is located at {plant.LocatedPlanted}.");
+              Console.WriteLine($"{plant.Id}:{plant.Species} is located in the {plant.LocatedPlanted} and was last watered on {plant.LastWateredDate}.");
             }
             //for each loop
           }
@@ -92,7 +92,7 @@ namespace PartyThyme
           var newPlant = new Plant();
           Console.WriteLine("What would you like to plant?");
           newPlant.Species = Console.ReadLine().ToLower();
-          Console.WriteLine($"Where did you plant the plant{newPlant.Species}?");
+          Console.WriteLine($"Where did you plant the {newPlant.Species}?");
           newPlant.LocatedPlanted = Console.ReadLine().ToLower();
           Console.WriteLine($"How much light in hours does the {newPlant.Species} need?");
           newPlant.LightNeeded = double.Parse(Console.ReadLine());
@@ -108,10 +108,10 @@ namespace PartyThyme
         if (userInput == "remove")
         {
           var displayRemove = db.Plants.OrderBy(plant => plant.Id);
+          Console.WriteLine("Which plant would you like to remove?");
           foreach (var plant in displayRemove)
           {
-            Console.Clear();
-            Console.WriteLine("Which plant would you like to remove?");
+
             Console.WriteLine($"{plant.Id}: {plant.Species} located in the {plant.LocatedPlanted}");
           }
 
@@ -122,6 +122,8 @@ namespace PartyThyme
           {
             Console.WriteLine("That is not a valid option, please select a valid id number.");
             userRemove = int.Parse(Console.ReadLine());
+            plantToRemove = db.Plants.FirstOrDefault(plant => plant.Id == userRemove);
+
           }
           if (plantToRemove != null)
           {
@@ -153,6 +155,8 @@ namespace PartyThyme
         else if (userInput == "quit")
         {
           isRunning = false;
+          Console.Clear();
+          Console.WriteLine("Goodbye");
         }
       }
     }
