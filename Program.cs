@@ -21,11 +21,11 @@ namespace PartyThyme
         }
         if (userInput == "view")
         {
-          Console.WriteLine("Would you like to view (ALL), by (LOCATION), or not (WATERED)?");
+          Console.WriteLine("Would you like to view (ALL), by (LOCATION), or not (WATERED) today?");
           userInput = Console.ReadLine().ToLower();
           if (userInput != "all" && userInput != "location" && userInput != "watered")
           {
-            Console.WriteLine("That is not a valid input, please choose again from: (ALL), by (LOCATION), or not (WATERED)?");
+            Console.WriteLine("That is not a valid input, please choose again from: (ALL), by (LOCATION), or not (WATERED) today?");
             userInput = Console.ReadLine().ToLower();
           }
           if (userInput == "all")
@@ -52,6 +52,15 @@ namespace PartyThyme
             Console.WriteLine("Which location would you like to view?");
             // var locationToLook = console readline
             var locationInput = Console.ReadLine().ToLower();
+            // if (locationInput != db.Plants.Where(plant => plant.LocatedPlanted))
+
+            // {
+            //   Console.WriteLine("That is not a valid option, please select a valid location.");
+            //   locationInput = Console.ReadLine().ToLower();
+            // }
+            // else if (locationInput == db.Plants.Any(plant => plant.LocatedPlanted))
+            // {
+
             // plant => plant.LocatedPlanted == locationInput
             var displayPlantsByLocation = db.Plants.Where(plant => plant.LocatedPlanted == locationInput);
 
@@ -59,12 +68,22 @@ namespace PartyThyme
             Console.Clear();
             foreach (var locatedPlant in displayPlantsByLocation)
             {
-              Console.WriteLine($"{locatedPlant.Species}");
+              Console.WriteLine($"{locatedPlant.Id}:{locatedPlant.Species} was planted on {locatedPlant.PlantedDate} and needs {locatedPlant.LightNeeded} hours of light and {locatedPlant.LightNeeded} gallons of water a week.");
             }
+            // }
           }
           if (userInput == "watered")
           {
-            isRunning = false;
+            Console.Clear();
+            Console.WriteLine("The following plants have not been watered today:");
+            var displayWatered = db.Plants.Where(plant => plant.LastWateredDate < DateTime.Today);
+            foreach (var p in displayWatered)
+            {
+              Console.WriteLine("The following plants have not been watered today:");
+              Console.WriteLine($"{p.Species} was last watered on {p.LastWateredDate}");
+            }
+
+
           }
         }
         if (userInput == "plant")
@@ -73,7 +92,7 @@ namespace PartyThyme
           var newPlant = new Plant();
           Console.WriteLine("What would you like to plant?");
           newPlant.Species = Console.ReadLine().ToLower();
-          Console.WriteLine($"Where did you plant {newPlant.Species}?");
+          Console.WriteLine($"Where did you plant the plant{newPlant.Species}?");
           newPlant.LocatedPlanted = Console.ReadLine().ToLower();
           Console.WriteLine($"How much light in hours does the {newPlant.Species} need?");
           newPlant.LightNeeded = double.Parse(Console.ReadLine());
@@ -112,19 +131,22 @@ namespace PartyThyme
         }
         if (userInput == "water")
         {
-          //display plants by last watered first(id, name, location, and last watered)
+          var displayAll = db.Plants.OrderBy(plant => plant.LastWateredDate);
+          foreach (var plant in displayAll)
+          {
+            Console.WriteLine($"{plant.Id}: {plant.Species} was last watered on {plant.LastWateredDate}.");
+          }
           Console.WriteLine("What plant would you like to water? Please enter the plant id from the list above!");
           var userWater = int.Parse(Console.ReadLine());
           var plantToWater = db.Plants.FirstOrDefault(plant => plant.Id == userWater);
           if (plantToWater == null)
           {
             Console.WriteLine("That is not a valid option, please select a valid id number.");
-            //display plants by last watered first(id, name, location, and last watered)
             userWater = int.Parse(Console.ReadLine());
           }
           if (plantToWater != null)
           {
-            // modify by id, updating last watered to current datetime
+            plantToWater.LastWateredDate = DateTime.Now;
             db.SaveChanges();
           }
         }
