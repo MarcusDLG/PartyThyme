@@ -68,7 +68,8 @@ namespace PartyThyme
             Console.Clear();
             foreach (var locatedPlant in displayPlantsByLocation)
             {
-              Console.WriteLine($"{locatedPlant.Id}:{locatedPlant.Species} was planted on {locatedPlant.PlantedDate} and needs {locatedPlant.LightNeeded} hours of light and {locatedPlant.LightNeeded} gallons of water a week.");
+              Console.WriteLine($"{locatedPlant.Id}:{locatedPlant.Species} was planted on {locatedPlant.PlantedDate} and needs {locatedPlant.LightNeeded} hours of light and {locatedPlant.WaterNeeded} gallons of water a week.");
+              Console.WriteLine($"{locatedPlant.Species} was planted on {locatedPlant.PlantedDate} and was last watered on {locatedPlant.LastWateredDate}");
             }
             // }
           }
